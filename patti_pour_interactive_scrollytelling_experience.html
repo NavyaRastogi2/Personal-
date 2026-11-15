@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patti &amp; Pour® — Every cup has a story.</title>
+
+  <!-- Google Fonts: Inter & Playfair Display / Lora for Editorial Serif Contrast -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Lora', 'Georgia', 'serif'],
+          },
+          colors: {
+            forest: {
+              950: '#0D2118',
+              900: '#133123',
+              800: '#1C4532',
+              700: '#275942',
+              600: '#3B7056',
+              400: '#8BA888',
+              200: '#C8D8C6',
+              100: '#E5EDE3',
+            },
+            cream: {
+              50: '#FCFBF7',
+              100: '#F7F3EA',
+              200: '#EAE0CE',
+              300: '#D6C5A9',
+            },
+            espresso: {
+              900: '#261409',
+              800: '#3B2314',
+              700: '#543420',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: #112A1E;
+      color: #F7F3EA;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Botanical subtle radial lighting */
+    .botanical-bg {
+      background:
+        radial-gradient(circle at 50% 35%, rgba(139, 168, 136, 0.16) 0%, rgba(28, 69, 50, 0.35) 45%, rgba(13, 33, 24, 0.98) 100%),
+        #112A1E;
+    }
+
+    /* Warm cream-tinted glassmorphism */
+    .glass-botanical {
+      background: rgba(19, 49, 35, 0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(247, 243, 234, 0.14);
+      box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.55);
+    }
+
+    .glass-nav {
+      background: rgba(17, 42, 30, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(247, 243, 234, 0.1);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D2118;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3B7056;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8BA888;
+    }
+
+    /* Scrollytelling 400vh track */
+    #scrollytelling-track {
+      height: 400vh;
+      position: relative;
+    }
+
+    #sticky-viewport {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #tea-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Subtle floating keyframe for decorative SVGs */
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(2deg); }
+    }
+    .animate-leaf {
+      animation: gentleFloat 6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="selection:bg-forest-400 selection:text-forest-950">
+
+  <!-- Top Minimal Glass Navigation Bar -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <!-- Brand Logo (Matches Patti & Pour Deck Emblem) -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-full bg-cream-100 flex items-center justify-center shadow-inner transition-transform duration-300 group-hover:scale-105">
+          <!-- Inline SVG of the Patti & Pour two-leaf steaming cup mark -->
+          <svg class="w-6 h-6 text-espresso-800" viewBox="0 0 64 64" fill="none">
+            <path d="M12 34C12 21 21 12 32 12C43 12 52 21 52 34" stroke="#3B2314" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M31 20C29.5 16.5 33 14 31.5 10" stroke="#3B2314" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M35.5 21C34.5 18 37 16 36 12.5" stroke="#3B2314" stroke-width="2" stroke-linecap="round"/>
+            <!-- Left Leaf -->
+            <path d="M31 39C22 39 17 32 16 26C23 25 29 29 31 39Z" fill="#3B2314"/>
+            <!-- Right Leaf Cup -->
+            <path d="M33 39C42 39 47 31 48 24C40 22 34 27 33 39Z" fill="#3B2314"/>
+            <!-- Cup Handle -->
+            <path d="M47.5 27C51.5 27 53 31.5 48.5 34" stroke="#3B2314" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-serif font-bold tracking-tight text-cream-100 text-base sm:text-lg leading-none">
+            Patti &amp; Pour<sup class="text-[10px] font-sans ml-0.5">®</sup>
+          </span>
+          <span class="text-[10px] tracking-[0.16em] uppercase text-forest-400 mt-0.5 hidden sm:block">
+            Every cup has a story.
+          </span>
+        </div>
+      </a>
+
+      <!-- Center Nav Links -->
+      <nav class="hidden md:flex items-center gap-7 text-xs font-medium text-cream-200/80">
+        <a href="#scrollytelling-track" class="hover:text-cream-100 transition-colors">The Craft</a>
+        <a href="#blends-showcase" class="hover:text-cream-100 transition-colors">Five Blends</a>
+        <a href="#brew-ritual" class="hover:text-cream-100 transition-colors">Brewing Ritual</a>
+        <a href="#story-bento" class="hover:text-cream-100 transition-colors">Origin</a>
+      </nav>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <button
+          id="auto-play-btn"
+          type="button"
+          class="px-3.5 py-2 rounded-full text-xs font-medium bg-cream-100/10 hover:bg-cream-100/20 text-cream-100 border border-cream-100/15 transition-all flex items-center gap-1.5 cursor-pointer"
+          title="Smoothly scrub through the full presentation"
+        >
+          <span id="play-icon" class="w-1.5 h-1.5 rounded-full bg-forest-400 animate-pulse"></span>
+          <span id="play-label">Auto-Scrub</span>
+        </button>
+
+        <button
+          id="reserve-nav-btn"
+          type="button"
+          class="px-4 py-2 rounded-full text-xs font-semibold bg-cream-100 text-espresso-900 hover:bg-cream-200 transition-all shadow-lg cursor-pointer"
+        >
+          Order 250g
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SCROLLYTELLING CONTAINER (400vh sticky scroll track) -->
+  <main>
+    <section id="scrollytelling-track" aria-label="Patti and Pour Interactive Tea Pouch Showcase">
+      <div id="sticky-viewport" class="botanical-bg">
+
+        <!-- Decorative Botanical Corner SVGs (from Whimsical Green Presentation Deck) -->
+        <svg class="pointer-events-none absolute -left-10 bottom-12 w-48 sm:w-64 h-48 sm:h-64 opacity-25 animate-leaf" viewBox="0 0 200 200" fill="none">
+          <path d="M100 185C45 165 20 105 32 45C85 48 125 95 100 185Z" fill="#275942"/>
+          <path d="M100 185C155 165 180 105 168 45C115 48 75 95 100 185Z" fill="#557C63"/>
+          <path d="M100 185C75 135 78 85 100 55C122 85 125 135 100 185Z" fill="#8BA888"/>
+          <path d="M100 180L48 68M100 180L152 68M100 180L100 72" stroke="#C8D8C6" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+
+        <svg class="pointer-events-none absolute -right-8 top-20 w-44 sm:w-56 h-44 sm:h-56 opacity-20 rotate-180" viewBox="0 0 200 200" fill="none">
+          <path d="M100 185C45 165 20 105 32 45C85 48 125 95 100 185Z" fill="#3B7056"/>
+          <path d="M100 185C155 165 180 105 168 45C115 48 75 95 100 185Z" fill="#8BA888"/>
+          <path d="M100 185C75 135 78 85 100 55C122 85 125 135 100 185Z" fill="#C8D8C6"/>
+        </svg>
+
+        <!-- High-DPI Illustrated Canvas Centerpiece -->
+        <canvas id="tea-canvas"></canvas>
+
+        <!-- Interactive Blend Switcher Pill Bar (Top-Center below header) -->
+        <div class="fixed top-20 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-2xl">
+          <div class="glass-botanical rounded-full p-1.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
+            <button type="button" data-blend="darjeeling" class="blend-pill active flex-1 whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer bg-cream-100 text-espresso-900 shadow">
+              Darjeeling Classic
+            </button>
+            <button type="button" data-blend="assam" class="blend-pill flex-1 whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-cream-200/80 hover:text-cream-100 transition-all cursor-pointer">
+              Assam Strong
+            </button>
+            <button type="button" data-blend="masala" class="blend-pill flex-1 whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-cream-200/80 hover:text-cream-100 transition-all cursor-pointer">
+              Masala Chai
+            </button>
+            <button type="button" data-blend="kashmiri" class="blend-pill flex-1 whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-cream-200/80 hover:text-cream-100 transition-all cursor-pointer">
+              Kashmiri Kahwa
+            </button>
+            <button type="button" data-blend="nilgiri" class="blend-pill flex-1 whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-cream-200/80 hover:text-cream-100 transition-all cursor-pointer">
+              Nilgiri Tea
+            </button>
+          </div>
+        </div>
+
+        <!-- Overlay Layer: Hero Intro (Visible at Scroll 0% - 22%) -->
+        <div
+          id="hero-overlay"
+          class="pointer-events-none absolute inset-x-0 bottom-14 sm:bottom-16 flex flex-col items-center justify-end px-6 text-center z-20"
+        >
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest-800/80 border border-forest-400/30 mb-3">
+            <span class="w-1.5 h-1.5 rounded-full bg-forest-400"></span>
+            <p class="text-[11px] font-semibold tracking-[0.2em] uppercase text-forest-200">
+              Single-Origin Indian Tea Estates • Net Wt. 250g
+            </p>
+          </div>
+
+          <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-cream-100 max-w-4xl leading-[1.06] drop-shadow-md">
+            Every cup has a story.
+          </h1>
+          <p class="mt-3 text-sm sm:text-base md:text-lg text-cream-200/90 max-w-xl font-normal leading-relaxed">
+            Five heritage blends crafted from India’s mist-kissed hills. Scroll to unseal the aroma, tasting notes, and brewing ritual.
+          </p>
+
+          <!-- Scroll Cue -->
+          <div class="mt-5 flex flex-col items-center gap-1.5 text-forest-200">
+            <span class="text-[10px] uppercase tracking-[0.22em] font-semibold">Scroll to Unseal</span>
+            <div class="w-[1.5px] h-7 bg-gradient-to-b from-cream-100/80 to-transparent"></div>
+          </div>
+        </div>
+
+        <!-- Callout 1: Aroma (Scroll 24% - 48%) -->
+        <div
+          id="callout-aroma"
+          class="pointer-events-none opacity-0 translate-y-6 absolute left-5 sm:left-12 md:left-16 top-1/2 -translate-y-1/2 max-w-xs sm:max-w-sm glass-botanical rounded-3xl p-6 sm:p-7 z-20"
+        >
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-forest-400"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-forest-200">01 / Aroma &amp; Freshness</span>
+          </div>
+          <h2 id="callout-1-title" class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-cream-100">
+            High-Altitude Mist.
+          </h2>
+          <p id="callout-1-desc" class="mt-2.5 text-sm text-cream-200/85 leading-relaxed">
+            Sealed in triple-layer 250g aroma-lock pouches within 24 hours of withering to preserve delicate muscatel and floral volatiles.
+          </p>
+          <div class="mt-4 pt-3.5 border-t border-cream-100/15 flex items-center justify-between text-xs text-forest-200">
+            <span>Harvest Elevation</span>
+            <span id="callout-1-stat" class="font-semibold text-cream-100">6,500 ft • First Flush</span>
+          </div>
+        </div>
+
+        <!-- Callout 2: Taste & Botanicals (Scroll 50% - 74%) -->
+        <div
+          id="callout-taste"
+          class="pointer-events-none opacity-0 translate-y-6 absolute right-5 sm:right-12 md:right-16 top-1/2 -translate-y-1/2 max-w-xs sm:max-w-sm glass-botanical rounded-3xl p-6 sm:p-7 z-20"
+        >
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/90">02 / Tasting Profile</span>
+          </div>
+          <h2 id="callout-2-title" class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-cream-100">
+            Light, Aromatic &amp; Smooth.
+          </h2>
+          <p id="callout-2-desc" class="mt-2.5 text-sm text-cream-200/85 leading-relaxed">
+            Whole orthodox leaves unfurl slowly in hot water—releasing golden amber liquor without harsh astringency or artificial oils.
+          </p>
+          <div class="mt-4 pt-3.5 border-t border-cream-100/15 flex items-center justify-between text-xs text-forest-200">
+            <span>Cup Character</span>
+            <span id="callout-2-stat" class="font-semibold text-cream-100">Bright Amber • Floral</span>
+          </div>
+        </div>
+
+        <!-- Callout 3: The Brewing Ritual (Scroll 76% - 100%) -->
+        <div
+          id="callout-origin"
+          class="pointer-events-none opacity-0 translate-y-6 absolute left-5 sm:left-12 md:left-16 bottom-12 sm:bottom-16 max-w-xs sm:max-w-md glass-botanical rounded-3xl p-6 sm:p-7 z-20"
+        >
+          <div class="flex items-center gap-2.5 mb-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">03 / Brew Perfect Chai</span>
+          </div>
+          <h2 class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-cream-100">
+            Four Steps to Stillness.
+          </h2>
+          <div class="mt-3.5 grid grid-cols-2 gap-2.5 text-xs">
+            <div class="bg-forest-950/60 border border-cream-100/10 rounded-xl p-2.5">
+              <span class="text-forest-400 font-bold block">1. Boil Water</span>
+              <span class="text-cream-100">100°C fresh spring water</span>
+            </div>
+            <div class="bg-forest-950/60 border border-cream-100/10 rounded-xl p-2.5">
+              <span class="text-forest-400 font-bold block">2. Add Tea</span>
+              <span class="text-cream-100">1 tsp loose leaf per cup</span>
+            </div>
+            <div class="bg-forest-950/60 border border-cream-100/10 rounded-xl p-2.5">
+              <span class="text-forest-400 font-bold block">3. Steep</span>
+              <span class="text-cream-100">3–5 mins covered infusion</span>
+            </div>
+            <div class="bg-forest-950/60 border border-cream-100/10 rounded-xl p-2.5">
+              <span class="text-forest-400 font-bold block">4. Strain &amp; Enjoy</span>
+              <span class="text-cream-100">Pour warm &amp; savor</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtle Scroll Progress Bar & Chapter Indicator -->
+        <div class="pointer-events-none absolute right-5 sm:right-8 bottom-7 sm:bottom-8 z-20 flex items-center gap-3">
+          <span id="chapter-indicator" class="text-[11px] font-mono text-forest-200 tracking-wider">
+            01 / POURED IN HERITAGE
+          </span>
+          <div class="w-20 sm:w-24 h-1.5 bg-cream-100/15 rounded-full overflow-hidden">
+            <div id="scroll-progress-bar" class="h-full w-0 bg-cream-100 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: OUR FIVE BLENDS ("Five blends. Countless chai moments.") -->
+    <section id="blends-showcase" class="relative z-10 bg-cream-100 text-espresso-900 py-20 sm:py-28 px-5 sm:px-8 border-t border-cream-300">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-800/10 text-forest-800 text-xs font-semibold uppercase tracking-[0.18em] mb-3">
+              <span>Our Products</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-espresso-900">
+              Five blends. Countless chai moments.
+            </h2>
+          </div>
+          <p class="text-espresso-700 max-w-md text-sm sm:text-base leading-relaxed">
+            Each 250g pouch captures a distinct Indian terroir—from the elephant-roamed gardens of Assam to the saffron valleys of Kashmir.
+          </p>
+        </div>
+
+        <!-- 5 Product Cards Grid (Exact match to Slide 5 of Patti & Pour deck) -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <!-- Cards populated cleanly via JS with custom illustrated SVG pouches -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: INTERACTIVE BREWING RITUAL (Inspired by Slide 9 "How It Works" + Pouch Side Panel) -->
+    <section id="brew-ritual" class="relative z-10 bg-forest-900 text-cream-100 py-20 sm:py-28 px-5 sm:px-8 border-t border-cream-100/10">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-forest-400 mb-2">
+            How It Works • Side-of-Pouch Guide
+          </p>
+          <h2 class="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-cream-100">
+            Brew the Perfect Chai.
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-cream-200/80">
+            Tap any step below to inspect the exact temperature, steeping time, and leaf ratio for your selected blend.
+          </p>
+        </div>
+
+        <!-- 4 Interactive Step Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="glass-botanical rounded-3xl p-6 hover:border-forest-400/50 transition-all group">
+            <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-cream-100 font-serif font-bold text-xl mb-5 group-hover:scale-105 transition-transform">
+              1
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-cream-100">Boil Water (100°C)</h3>
+            <p class="mt-2 text-sm text-cream-200/80 leading-relaxed">
+              Bring fresh, filtered water to a rolling boil at 100°C (85°C for Kashmiri Kahwa green leaves).
+            </p>
+          </div>
+
+          <div class="glass-botanical rounded-3xl p-6 hover:border-forest-400/50 transition-all group">
+            <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-cream-100 font-serif font-bold text-xl mb-5 group-hover:scale-105 transition-transform">
+              2
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-cream-100">Add Tea (1 tsp)</h3>
+            <p class="mt-2 text-sm text-cream-200/80 leading-relaxed">
+              Measure 1 heaped teaspoon (2.5g) of Patti &amp; Pour leaves per 200ml cup into your warmed teapot.
+            </p>
+          </div>
+
+          <div class="glass-botanical rounded-3xl p-6 hover:border-forest-400/50 transition-all group">
+            <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-cream-100 font-serif font-bold text-xl mb-5 group-hover:scale-105 transition-transform">
+              3
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-cream-100">Steep (3–5 min)</h3>
+            <p class="mt-2 text-sm text-cream-200/80 leading-relaxed">
+              Cover and let the whole leaves and whole spices bloom for 3 to 5 minutes. Add milk &amp; jaggery if desired.
+            </p>
+          </div>
+
+          <div class="glass-botanical rounded-3xl p-6 hover:border-forest-400/50 transition-all group">
+            <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-cream-100 font-serif font-bold text-xl mb-5 group-hover:scale-105 transition-transform">
+              4
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-cream-100">Strain &amp; Enjoy</h3>
+            <p class="mt-2 text-sm text-cream-200/80 leading-relaxed">
+              Pour through a fine mesh strainer into your favorite ceramic cup and savor the story in every sip.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: NUMBERS THAT MATTER & ORIGIN BENTO (Inspired by Slides 7 & 11) -->
+    <section id="story-bento" class="relative z-10 bg-forest-950 text-cream-100 py-20 sm:py-28 px-5 sm:px-8 border-t border-cream-100/10">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-forest-400 mb-2">
+              Numbers That Matter
+            </p>
+            <h2 class="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-cream-100">
+              Crafted with botanical honesty.
+            </h2>
+          </div>
+          <p class="text-cream-200/75 max-w-md text-sm sm:text-base leading-relaxed">
+            Directly sourced from family-owned Indian tea gardens with zero artificial flavorings or dust fillers.
+          </p>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 glass-botanical rounded-3xl p-8 flex flex-col justify-between min-h-[260px]">
+            <div>
+              <span class="text-xs font-mono uppercase tracking-widest text-forest-400">100% Single-Origin Harvest</span>
+              <h3 class="font-serif text-2xl sm:text-3xl font-semibold mt-3 max-w-lg text-cream-100">
+                From Assam’s Brahmaputra plains to Darjeeling’s Himalayan slopes.
+              </h3>
+              <p class="mt-3 text-sm text-cream-200/80 max-w-xl leading-relaxed">
+                Every batch is traceable to its harvest estate and packed in resealable 250g barrier pouches that lock out humidity and sunlight.
+              </p>
+            </div>
+            <div class="mt-8 grid grid-cols-3 gap-4 pt-6 border-t border-cream-100/15">
+              <div>
+                <div class="font-serif text-2xl sm:text-4xl font-bold text-cream-100">100%</div>
+                <div class="text-xs text-forest-400 mt-1">Whole Leaf &amp; Real Spices</div>
+              </div>
+              <div>
+                <div class="font-serif text-2xl sm:text-4xl font-bold text-cream-100">25,000+</div>
+                <div class="text-xs text-forest-400 mt-1">Morning Chai Rituals</div>
+              </div>
+              <div>
+                <div class="font-serif text-2xl sm:text-4xl font-bold text-cream-100">5</div>
+                <div class="text-xs text-forest-400 mt-1">Signature Indian Terroirs</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botanical Teapot Highlight Card -->
+          <div class="glass-botanical rounded-3xl p-8 flex flex-col justify-between min-h-[260px] bg-gradient-to-br from-forest-800/80 to-forest-950">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono uppercase tracking-widest text-forest-200">Aroma-Lock 250g</span>
+              <!-- Steaming Teapot SVG matching Deck Icon -->
+              <svg class="w-12 h-12" viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="36" fill="#E5EDE3" fill-opacity="0.14"/>
+                <path d="M22 44C22 33 30 25 40 25C50 25 58 33 58 44C58 55 50 61 40 61C30 61 22 55 22 44Z" fill="#1C4532" stroke="#F7F3EA" stroke-width="2.5"/>
+                <path d="M23 39H57" stroke="#F7F3EA" stroke-width="2.5"/>
+                <path d="M22 35C15 35 13 48 22 50" stroke="#F7F3EA" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M58 42L66 36L69 27L73 26" stroke="#F7F3EA" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="40" cy="21" r="3" fill="#8BA888" stroke="#F7F3EA" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="my-6">
+              <div class="text-3xl font-serif font-bold text-cream-100">Zero Essences</div>
+              <p class="mt-2 text-sm text-cream-200/80 leading-relaxed">
+                Crushed green cardamom, cinnamon bark, ginger root, and Pampore saffron strands—never synthetic sprays.
+              </p>
+            </div>
+            <button
+              type="button"
+              id="bento-explore-btn"
+              class="w-full py-3 rounded-full bg-cream-100 text-espresso-900 text-xs font-semibold hover:bg-cream-200 transition-colors cursor-pointer"
+            >
+              Build Your Tasting Box
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-forest-950 text-cream-200/70 py-14 px-5 sm:px-8 border-t border-cream-100/10">
+      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-cream-100 flex items-center justify-center text-espresso-800 font-serif font-bold text-sm">
+            P
+          </div>
+          <div>
+            <div class="font-serif font-bold text-cream-100 text-base">Patti &amp; Pour®</div>
+            <div class="text-xs text-forest-400">Every cup has a story.</div>
+          </div>
+        </div>
+        <div class="text-xs text-center sm:text-right space-y-1">
+          <div>hello@pattiandpour.in &nbsp;|&nbsp; +91 98290 44120</div>
+          <div class="text-cream-200/45">© 2026 Patti &amp; Pour Tea Co. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Interactive Order / Reserve Modal (Zero alert() usage) -->
+  <div
+    id="reserve-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-forest-950/85 backdrop-blur-md p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <div class="bg-cream-100 text-espresso-900 rounded-3xl max-w-md w-full p-7 sm:p-8 relative shadow-2xl border border-cream-300">
+      <button
+        id="close-modal-btn"
+        type="button"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-espresso-900/10 hover:bg-espresso-900/20 flex items-center justify-center text-espresso-800 transition-colors cursor-pointer"
+        aria-label="Close modal"
+      >
+        ✕
+      </button>
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-800/10 text-forest-800 text-[11px] font-semibold uppercase tracking-wider mb-2">
+        <span>Fresh Harvest Dispatch • 250g Pouch</span>
+      </div>
+      <h3 id="modal-title" class="font-serif text-2xl font-bold text-espresso-900">
+        Order Patti &amp; Pour
+      </h3>
+      <p class="text-sm text-espresso-700 mt-1">
+        Select your blend and quantity. Complimentary shipping across India on 2+ pouches.
+      </p>
+
+      <form id="reserve-form" class="mt-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-espresso-800 mb-1.5" for="blend-select">Choose Blend (Net Wt. 250g)</label>
+          <select
+            id="blend-select"
+            class="w-full px-4 py-3 rounded-xl bg-white border border-cream-300 text-sm font-medium text-espresso-900 focus:outline-none focus:border-forest-700"
+          >
+            <option value="Darjeeling Classic — ₹399">Darjeeling Classic (Black Tea) — ₹399</option>
+            <option value="Assam Strong — ₹329">Assam Strong (Black Tea) — ₹329</option>
+            <option value="Masala Chai — ₹349">Masala Chai (Spiced Tea) — ₹349</option>
+            <option value="Kashmiri Kahwa — ₹449">Kashmiri Kahwa (Green Tea Blend) — ₹449</option>
+            <option value="Nilgiri Tea — ₹359">Nilgiri Tea (Black Tea) — ₹359</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-espresso-800 mb-1.5" for="qty-select">Quantity</label>
+            <select
+              id="qty-select"
+              class="w-full px-4 py-3 rounded-xl bg-white border border-cream-300 text-sm font-medium text-espresso-900 focus:outline-none focus:border-forest-700"
+            >
+              <option value="1">1 Pouch (250g)</option>
+              <option value="2">2 Pouches (500g)</option>
+              <option value="5">5-Blend Tasting Box</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-espresso-800 mb-1.5" for="customer-email">Email</label>
+            <input
+              id="customer-email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              class="w-full px-4 py-3 rounded-xl bg-white border border-cream-300 text-sm text-espresso-900 placeholder-espresso-700/40 focus:outline-none focus:border-forest-700"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3.5 rounded-full bg-forest-800 text-cream-100 font-semibold text-sm hover:bg-forest-700 transition-colors shadow-lg cursor-pointer"
+        >
+          Confirm Pouch Order
+        </button>
+      </form>
+
+      <div id="reserve-confirmation" class="hidden mt-5 p-4 rounded-2xl bg-forest-800/10 border border-forest-800/20 text-center">
+        <p class="text-sm font-semibold text-forest-800">Your chai story is on its way!</p>
+        <p id="confirmation-detail" class="text-xs text-espresso-700 mt-1">
+          Order confirmation sent to your inbox.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE INTERACTIVE ILLUSTRATION & SCROLLYTELLING ENGINE -->
+  <script>
+    (function () {
+      'use strict';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // -----------------------------------------------------------------------
+      // 1. FIVE AUTHENTIC BLENDS FROM THE PATTI & POUR PRESENTATION DECK
+      // -----------------------------------------------------------------------
+      const BLENDS = {
+        darjeeling: {
+          id: 'darjeeling',
+          name: 'DARJEELING',
+          subname: 'CLASSIC',
+          category: 'BLACK TEA',
+          tagline: 'Light, aromatic and smooth.',
+          price: '₹ 399',
+          weight: '250 g',
+          bodyColor: '#6E7D55',
+          sideColor: '#2B331E',
+          accentColor: '#98AB7A',
+          skyTop: '#8FA4B8',
+          skyBottom: '#D6E2E8',
+          landscape: 'darjeeling',
+          aromaTitle: 'High-Altitude Mist.',
+          aromaDesc: 'Sealed in triple-layer 250g aroma-lock pouches within 24 hours of withering to preserve delicate muscatel and floral volatiles.',
+          aromaStat: '6,500 ft • First Flush',
+          tasteTitle: 'Light, Aromatic & Smooth.',
+          tasteDesc: 'Whole orthodox Himalayan leaves unfurl gently—releasing a golden champagne liquor with crisp muscatel notes.',
+          tasteStat: 'Golden Liquor • Muscatel'
+        },
+        assam: {
+          id: 'assam',
+          name: 'ASSAM',
+          subname: 'STRONG',
+          category: 'BLACK TEA',
+          tagline: 'Rich & robust for a perfect chai.',
+          price: '₹ 329',
+          weight: '250 g',
+          bodyColor: '#6E3524',
+          sideColor: '#2D130B',
+          accentColor: '#D68954',
+          skyTop: '#C97B48',
+          skyBottom: '#E9B47E',
+          landscape: 'assam',
+          aromaTitle: 'Malty Monsoon Soil.',
+          aromaDesc: 'Harvested from low-elevation Brahmaputra river estates for a deep, full-bodied malty bouquet that holds up to milk and simmering.',
+          aromaStat: 'Second Flush • CTC & Orthodox',
+          tasteTitle: 'Rich & Robust Chai.',
+          tasteDesc: 'Deep terracotta brew with bold caramel richness—crafted specifically for brisk morning masala and adrak chai.',
+          tasteStat: 'Full-Bodied • Malty'
+        },
+        masala: {
+          id: 'masala',
+          name: 'MASALA',
+          subname: 'CHAI',
+          category: 'SPICED TEA',
+          tagline: 'A classic blend of tea and Indian spices.',
+          price: '₹ 349',
+          weight: '250 g',
+          bodyColor: '#C86D2D',
+          sideColor: '#4A2107',
+          accentColor: '#F2B15B',
+          skyTop: '#E59638',
+          skyBottom: '#F6D17A',
+          landscape: 'masala',
+          aromaTitle: 'Warm Hearth Spices.',
+          aromaDesc: 'Whole green cardamom pods, Malabar black pepper, cinnamon bark, cloves, and dried ginger blended with brisk Assam leaves.',
+          aromaStat: '6 Whole Botanicals',
+          tasteTitle: 'Velvety & Spiced.',
+          tasteDesc: 'Balanced warmth that tingles softly on the palate without overpowering the rich black tea backbone.',
+          tasteStat: 'Cardamom • Ginger • Clove'
+        },
+        kashmiri: {
+          id: 'kashmiri',
+          name: 'KASHMIRI',
+          subname: 'KAHWA',
+          category: 'GREEN TEA BLEND',
+          tagline: 'A warm, aromatic blend with saffron & spices.',
+          price: '₹ 449',
+          weight: '250 g',
+          bodyColor: '#7B567D',
+          sideColor: '#2B192D',
+          accentColor: '#B892BA',
+          skyTop: '#9B80A6',
+          skyBottom: '#DFCFE4',
+          landscape: 'kashmiri',
+          aromaTitle: 'Pampore Saffron & Rose.',
+          aromaDesc: 'Delicate rolled green tea leaves infused with genuine Kashmiri saffron strands, crushed almonds, and cinnamon.',
+          aromaStat: 'Saffron • Cinnamon • Almond',
+          tasteTitle: 'Luminous & Soothing.',
+          tasteDesc: 'A fragrant, honey-hued infusion inspired by Dal Lake shikara mornings—calming, restorative, and naturally sweet.',
+          tasteStat: 'Delicate Green • Saffron'
+        },
+        nilgiri: {
+          id: 'nilgiri',
+          name: 'NILGIRI',
+          subname: 'TEA',
+          category: 'BLACK TEA',
+          tagline: 'Smooth, refreshing and well-balanced.',
+          price: '₹ 359',
+          weight: '250 g',
+          bodyColor: '#357296',
+          sideColor: '#0E293B',
+          accentColor: '#6EA8C9',
+          skyTop: '#5E98BA',
+          skyBottom: '#B5D7E8',
+          landscape: 'nilgiri',
+          aromaTitle: 'Blue Mountain Eucalyptus.',
+          aromaDesc: 'Grown in the frost-kissed Western Ghats at 7,000 feet, imparting crisp orchard fruit and cooling eucalyptus notes.',
+          aromaStat: '7,000 ft • Frost Tea',
+          tasteTitle: 'Smooth & Refreshing.',
+          tasteDesc: 'Exceptionally clean finish with zero bitterness—equally stunning served hot with lemon or chilled over ice.',
+          tasteStat: 'Crisp • Citrus & Orchard'
+        }
+      };
+
+      let activeBlendKey = 'darjeeling';
+
+      // -----------------------------------------------------------------------
+      // 2. RENDER THE 5 PRODUCT CARDS IN SECTION 2 (SVG POUCH ART)
+      // -----------------------------------------------------------------------
+      function createMiniPouchSVG(blend) {
+        return `
+          <svg viewBox="0 0 180 230" class="w-36 h-44 mx-auto drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-1.5" fill="none">
+            <!-- Left 3D gusset -->
+            <path d="M22 42L36 16L36 214L22 204Z" fill="${blend.sideColor}"/>
+            <!-- Main Pouch Body -->
+            <rect x="36" y="16" width="122" height="198" rx="4" fill="${blend.bodyColor}"/>
+            <!-- Top crimping lines -->
+            <line x1="36" y1="22" x2="158" y2="22" stroke="#000" stroke-opacity="0.18" stroke-width="1.5"/>
+            <line x1="36" y1="26" x2="158" y2="26" stroke="#FFF" stroke-opacity="0.15" stroke-width="1"/>
+            <!-- Cream Wavy Label Band -->
+            <path d="M36 44C54 49 72 34 97 38C122 42 140 34 158 40V96C138 102 120 88 96 92C72 96 54 84 36 90V44Z" fill="#F7F3EA"/>
+            <!-- Brand Emblem on Pouch -->
+            <path d="M84 56C84 49 90 44 97 44C104 44 110 49 110 56" stroke="#3B2314" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M96 58C91 58 88 54 88 51C92 50 95 52 96 58Z" fill="#3B2314"/>
+            <path d="M98 58C103 58 106 53 106 50C102 49 99 52 98 58Z" fill="#3B2314"/>
+            <text x="97" y="73" text-anchor="middle" fill="#3B2314" font-family="Georgia, serif" font-weight="bold" font-size="13.5">Patti &amp; Pour</text>
+            <!-- Blend Title -->
+            <text x="97" y="114" text-anchor="middle" fill="#F7F3EA" font-family="Inter, sans-serif" font-weight="700" font-size="12.5" letter-spacing="0.8">${blend.name}</text>
+            <text x="97" y="128" text-anchor="middle" fill="#F7F3EA" font-family="Inter, sans-serif" font-weight="700" font-size="12.5" letter-spacing="0.8">${blend.subname}</text>
+            <text x="97" y="140" text-anchor="middle" fill="#F7F3EA" fill-opacity="0.85" font-family="Inter, sans-serif" font-weight="500" font-size="7" letter-spacing="1.2">${blend.category}</text>
+            <!-- Illustrated Scenic Footer inside Pouch -->
+            <g clip-path="url(#clip-${blend.id})">
+              <defs>
+                <clipPath id="clip-${blend.id}">
+                  <rect x="36" y="152" width="122" height="62" rx="2"/>
+                </clipPath>
+              </defs>
+              <rect x="36" y="152" width="122" height="62" fill="${blend.skyBottom}"/>
+              <!-- Stylized Mountains / Hills -->
+              <path d="M36 184L68 158L98 182L126 162L158 186V214H36Z" fill="${blend.accentColor}"/>
+              <path d="M36 196C62 184 95 190 125 186C142 184 150 188 158 192V214H36Z" fill="#2E5A36"/>
+              <path d="M36 205C75 196 115 202 158 198V214H36Z" fill="#1C3D24"/>
+            </g>
+            <text x="150" y="208" text-anchor="end" fill="#F7F3EA" font-family="Inter, sans-serif" font-weight="600" font-size="6.5">NET WT. 250 g</text>
+          </svg>
+        `;
+      }
+
+      function renderProductCards() {
+        const grid = document.getElementById('products-grid');
+        if (!grid) return;
+        grid.innerHTML = Object.values(BLENDS).map((b) => `
+          <div class="group bg-white rounded-3xl p-5 border border-cream-300/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <div class="bg-cream-100 rounded-2xl py-5 px-3 mb-4 relative overflow-hidden">
+                ${createMiniPouchSVG(b)}
+              </div>
+              <div class="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-forest-700">
+                <span>${b.category}</span>
+                <span>${b.weight}</span>
+              </div>
+              <h3 class="font-serif text-xl font-bold text-espresso-900 mt-1">
+                ${b.name.charAt(0) + b.name.slice(1).toLowerCase()} ${b.subname.charAt(0) + b.subname.slice(1).toLowerCase()}
+              </h3>
+              <p class="text-xs text-espresso-700/85 mt-1.5 leading-relaxed">
+                ${b.tagline}
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-cream-200 flex items-center justify-between">
+              <span class="font-serif font-bold text-lg text-espresso-900">${b.price}</span>
+              <button
+                type="button"
+                data-order-blend="${b.id}"
+                class="order-card-btn px-3.5 py-2 rounded-full bg-forest-800 text-cream-100 text-xs font-semibold hover:bg-forest-700 transition-colors cursor-pointer"
+              >
+                Select Pouch
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('.order-card-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-order-blend');
+            selectBlend(key);
+            openOrderModal(key);
+          });
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 3. HIGH-DPI ILLUSTRATED CANVAS RENDERER (TEA POUCH + BOTANICALS + STEAM)
+      // -----------------------------------------------------------------------
+      const canvas = document.getElementById('tea-canvas');
+      const ctx = canvas.getContext('2d');
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const scrollState = { progress: 0 };
+
+      // Ambient floating tea leaves
+      const leaves = Array.from({ length: 18 }, (_, i) => ({
+        angle: (i / 18) * Math.PI * 2,
+        radiusFactor: 0.72 + (i % 5) * 0.14,
+        size: 11 + (i % 4) * 4,
+        speed: 0.15 + (i % 3) * 0.08,
+        tilt: (i % 6) * 0.5,
+        shade: i % 3 === 0 ? '#8BA888' : i % 3 === 1 ? '#3B7056' : '#C8D8C6'
+      }));
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        renderFrame();
+      }
+
+      // Draw botanical tea leaf
+      function drawLeaf(x, y, size, angle, fill, vein) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.moveTo(0, -size);
+        ctx.quadraticCurveTo(size * 0.68, 0, 0, size);
+        ctx.quadraticCurveTo(-size * 0.68, 0, 0, -size);
+        ctx.fillStyle = fill;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, -size * 0.72);
+        ctx.lineTo(0, size * 0.72);
+        ctx.strokeStyle = vein;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Draw illustrated scenic artwork at bottom of pouch
+      function drawPouchLandscape(x, y, w, h, blend) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, [0, 0, 8, 8]);
+        ctx.clip();
+
+        // Sky gradient
+        const skyGrad = ctx.createLinearGradient(0, y, 0, y + h);
+        skyGrad.addColorStop(0, blend.skyTop);
+        skyGrad.addColorStop(1, blend.skyBottom);
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(x, y, w, h);
+
+        // Distant Mountains / Arches depending on blend
+        if (blend.landscape === 'darjeeling' || blend.landscape === 'kashmiri') {
+          // Snow-capped peaks
+          ctx.fillStyle = blend.landscape === 'kashmiri' ? '#6D658C' : '#527794';
+          ctx.beginPath();
+          ctx.moveTo(x, y + h * 0.58);
+          ctx.lineTo(x + w * 0.28, y + h * 0.16);
+          ctx.lineTo(x + w * 0.58, y + h * 0.54);
+          ctx.lineTo(x + w * 0.82, y + h * 0.24);
+          ctx.lineTo(x + w, y + h * 0.52);
+          ctx.lineTo(x + w, y + h);
+          ctx.lineTo(x, y + h);
+          ctx.closePath();
+          ctx.fill();
+
+          // Snow caps
+          ctx.fillStyle = '#F7F3EA';
+          ctx.beginPath();
+          ctx.moveTo(x + w * 0.28, y + h * 0.16);
+          ctx.lineTo(x + w * 0.20, y + h * 0.30);
+          ctx.lineTo(x + w * 0.28, y + h * 0.27);
+          ctx.lineTo(x + w * 0.37, y + h * 0.31);
+          ctx.closePath();
+          ctx.fill();
+        } else if (blend.landscape === 'masala') {
+          // Heritage Palace Silhouette
+          ctx.fillStyle = '#B85D1E';
+          ctx.fillRect(x + w * 0.12, y + h * 0.34, w * 0.52, h * 0.45);
+          ctx.beginPath();
+          ctx.arc(x + w * 0.38, y + h * 0.34, w * 0.12, Math.PI, 0);
+          ctx.fill();
+          // Archway
+          ctx.fillStyle = '#5C2709';
+          ctx.beginPath();
+          ctx.arc(x + w * 0.38, y + h * 0.56, w * 0.06, Math.PI, 0);
+          ctx.lineTo(x + w * 0.44, y + h * 0.78);
+          ctx.lineTo(x + w * 0.32, y + h * 0.78);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Foreground Rolling Tea Hills or Lake
+        if (blend.landscape === 'kashmiri') {
+          // Dal Lake reflection
+          ctx.fillStyle = '#4B789E';
+          ctx.fillRect(x, y + h * 0.62, w, h * 0.38);
+          // Shikara Boat
+          ctx.fillStyle = '#C97B32';
+          ctx.beginPath();
+          ctx.moveTo(x + w * 0.25, y + h * 0.76);
+          ctx.quadraticCurveTo(x + w * 0.5, y + h * 0.86, x + w * 0.76, y + h * 0.74);
+          ctx.lineTo(x + w * 0.68, y + h * 0.82);
+          ctx.lineTo(x + w * 0.32, y + h * 0.82);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillRect(x + w * 0.38, y + h * 0.67, w * 0.22, h * 0.08);
+        } else {
+          // Lush terraced tea garden hills
+          ctx.fillStyle = '#4E7D34';
+          ctx.beginPath();
+          ctx.moveTo(x, y + h * 0.58);
+          ctx.quadraticCurveTo(x + w * 0.45, y + h * 0.44, x + w, y + h * 0.62);
+          ctx.lineTo(x + w, y + h);
+          ctx.lineTo(x, y + h);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#2A4F1D';
+          ctx.beginPath();
+          ctx.moveTo(x, y + h * 0.76);
+          ctx.quadraticCurveTo(x + w * 0.55, y + h * 0.64, x + w, y + h * 0.78);
+          ctx.lineTo(x + w, y + h);
+          ctx.lineTo(x, y + h);
+          ctx.closePath();
+          ctx.fill();
+
+          // Assam Elephant silhouette
+          if (blend.landscape === 'assam') {
+            ctx.fillStyle = '#2B2623';
+            ctx.beginPath();
+            ctx.ellipse(x + w * 0.48, y + h * 0.67, w * 0.09, h * 0.065, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(x + w * 0.41, y + h * 0.68, w * 0.03, h * 0.11);
+            ctx.fillRect(x + w * 0.51, y + h * 0.68, w * 0.03, h * 0.11);
+          }
+        }
+
+        ctx.restore();
+      }
+
+      function renderFrame() {
+        const p = scrollState.progress;
+        const blend = BLENDS[activeBlendKey];
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Smooth responsive positioning as user scrolls through callouts
+        let centerX = width * 0.5;
+        let centerY = height * 0.44;
+        if (width >= 768) {
+          if (p > 0.20 && p <= 0.49) {
+            const t = Math.sin(((p - 0.20) / 0.29) * Math.PI);
+            centerX = width * (0.5 + t * 0.16);
+          } else if (p > 0.49 && p <= 0.75) {
+            const t = Math.sin(((p - 0.49) / 0.26) * Math.PI);
+            centerX = width * (0.5 - t * 0.16);
+          } else if (p > 0.75) {
+            const t = Math.min(1, (p - 0.75) / 0.18);
+            centerX = width * (0.5 + t * 0.15);
+          }
+        } else {
+          centerY = height * 0.42;
+        }
+
+        const scaleBase = Math.min(width, height) / 760;
+        const pouchW = Math.max(195, Math.min(265, 245 * scaleBase * (1 + Math.sin(p * Math.PI) * 0.08)));
+        const pouchH = pouchW * 1.48;
+        const sideW = pouchW * 0.19;
+
+        // 1. Soft Ambient Aura Ring (Matches the organic green double circle in the presentation deck)
+        const auraR = pouchH * 0.66;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, auraR, 0, Math.PI * 2);
+        const auraGrad = ctx.createRadialGradient(centerX, centerY, auraR * 0.2, centerX, centerY, auraR);
+        auraGrad.addColorStop(0, 'rgba(247, 243, 234, 0.11)');
+        auraGrad.addColorStop(0.65, 'rgba(139, 168, 136, 0.06)');
+        auraGrad.addColorStop(1, 'rgba(13, 33, 24, 0)');
+        ctx.fillStyle = auraGrad;
+        ctx.fill();
+
+        // Double organic hand-drawn ring from deck
+        ctx.strokeStyle = 'rgba(200, 216, 198, 0.22)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(centerX - 4, centerY, auraR * 0.88, auraR * 0.85, p * 0.6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(139, 168, 136, 0.25)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(centerX + 5, centerY + 3, auraR * 0.86, auraR * 0.89, -p * 0.4, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // 2. Orbiting Botanical Tea Leaves (Expand outward as pouch "opens" on scroll)
+        const spreadFactor = 1 + p * 0.35;
+        leaves.forEach((leaf, idx) => {
+          const theta = leaf.angle + p * Math.PI * 1.4 * leaf.speed;
+          const rx = pouchW * 0.92 * leaf.radiusFactor * spreadFactor;
+          const ry = pouchH * 0.56 * leaf.radiusFactor * spreadFactor;
+          const lx = centerX + Math.cos(theta) * rx;
+          const ly = centerY + Math.sin(theta) * ry;
+          const alpha = 0.45 + 0.4 * Math.sin(p * Math.PI + idx);
+          ctx.save();
+          ctx.globalAlpha = Math.max(0.25, Math.min(0.9, alpha));
+          drawLeaf(lx, ly, leaf.size, theta + leaf.tilt, leaf.shade, '#133123');
+          ctx.restore();
+        });
+
+        // 3. Rising Aromatic Steam Wisps above Pouch
+        for (let s = -1; s <= 1; s++) {
+          ctx.save();
+          ctx.beginPath();
+          const sx = centerX + s * (pouchW * 0.16);
+          const startY = centerY - pouchH * 0.53;
+          const steamH = 48 + p * 34;
+          ctx.moveTo(sx, startY);
+          for (let step = 0; step <= 24; step++) {
+            const frac = step / 24;
+            const waveX = sx + Math.sin(frac * Math.PI * 3 + p * 12 + s) * (6 + frac * 5);
+            const waveY = startY - frac * steamH;
+            ctx.lineTo(waveX, waveY);
+          }
+          ctx.strokeStyle = `rgba(247, 243, 234, ${0.18 + Math.sin(p * Math.PI) * 0.22})`;
+          ctx.lineWidth = 2.5;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // 4. Soft Ground Shadow under Pouch
+        ctx.save();
+        const shadowGrad = ctx.createRadialGradient(
+          centerX, centerY + pouchH * 0.54, 8,
+          centerX, centerY + pouchH * 0.54, pouchW * 0.85
+        );
+        shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.58)');
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = shadowGrad;
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY + pouchH * 0.54, pouchW * 0.82, 20, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // 5. 3D Stand-Up Tea Pouch Geometry
+        const frontX = centerX - pouchW * 0.42;
+        const frontY = centerY - pouchH * 0.5;
+
+        // Left Gusset Side Panel (With mini "BREW PERFECT CHAI" icons)
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(frontX, frontY);
+        ctx.lineTo(frontX - sideW, frontY + 18);
+        ctx.lineTo(frontX - sideW, frontY + pouchH - 12);
+        ctx.lineTo(frontX, frontY + pouchH);
+        ctx.closePath();
+        ctx.fillStyle = blend.sideColor;
+        ctx.fill();
+
+        // Side panel micro typography
+        ctx.fillStyle = 'rgba(247, 243, 234, 0.78)';
+        ctx.font = '600 7px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const sideMidX = frontX - sideW * 0.5;
+        ctx.fillText('BREW', sideMidX, frontY + 46);
+        ctx.fillText('CHAI', sideMidX, frontY + 55);
+        ['100°C', '1 tsp', '3-5m', 'Enjoy'].forEach((lbl, idx) => {
+          const iy = frontY + 86 + idx * 48;
+          ctx.strokeStyle = 'rgba(247, 243, 234, 0.6)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(sideMidX - 6, iy - 12, 12, 10);
+          ctx.fillText(lbl, sideMidX, iy + 8);
+        });
+        ctx.restore();
+
+        // Main Front Pouch Body
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(frontX, frontY, pouchW, pouchH, [6, 8, 8, 6]);
+        ctx.fillStyle = blend.bodyColor;
+        ctx.fill();
+
+        // Subtle cylindrical studio lighting sheen across pouch
+        const sheen = ctx.createLinearGradient(frontX, 0, frontX + pouchW, 0);
+        sheen.addColorStop(0, 'rgba(255,255,255,0.12)');
+        sheen.addColorStop(0.25, 'rgba(255,255,255,0.03)');
+        sheen.addColorStop(0.85, 'rgba(0,0,0,0.08)');
+        sheen.addColorStop(1, 'rgba(0,0,0,0.22)');
+        ctx.fillStyle = sheen;
+        ctx.fill();
+
+        // Top Heat-Seal Ribbing
+        ctx.strokeStyle = 'rgba(0,0,0,0.22)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(frontX, frontY + 11);
+        ctx.lineTo(frontX + pouchW, frontY + 11);
+        ctx.moveTo(frontX, frontY + 17);
+        ctx.lineTo(frontX + pouchW, frontY + 17);
+        ctx.stroke();
+
+        // Scalloped Cream Label Band (Signature Patti & Pour Pouch Wave)
+        const waveTop = frontY + pouchH * 0.14;
+        const waveBot = frontY + pouchH * 0.39;
+        ctx.beginPath();
+        ctx.moveTo(frontX, waveTop);
+        ctx.bezierCurveTo(
+          frontX + pouchW * 0.32, waveTop + 14,
+          frontX + pouchW * 0.65, waveTop - 14,
+          frontX + pouchW, waveTop + 4
+        );
+        ctx.lineTo(frontX + pouchW, waveBot);
+        ctx.bezierCurveTo(
+          frontX + pouchW * 0.68, waveBot + 12,
+          frontX + pouchW * 0.34, waveBot - 14,
+          frontX, waveBot + 4
+        );
+        ctx.closePath();
+        ctx.fillStyle = '#F7F3EA';
+        ctx.fill();
+
+        // Patti & Pour Emblem Inside Cream Wave
+        const logoX = frontX + pouchW * 0.5;
+        const logoY = waveTop + (waveBot - waveTop) * 0.36;
+        ctx.strokeStyle = '#3B2314';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(logoX, logoY, 17, Math.PI, 0);
+        ctx.stroke();
+
+        // Two-leaf cup icon
+        ctx.fillStyle = '#3B2314';
+        ctx.beginPath();
+        ctx.moveTo(logoX - 1, logoY + 2);
+        ctx.quadraticCurveTo(logoX - 14, logoY + 2, logoX - 16, logoY - 7);
+        ctx.quadraticCurveTo(logoX - 5, logoY - 8, logoX - 1, logoY + 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(logoX + 1, logoY + 2);
+        ctx.quadraticCurveTo(logoX + 14, logoY + 2, logoX + 16, logoY - 8);
+        ctx.quadraticCurveTo(logoX + 4, logoY - 10, logoX + 1, logoY + 2);
+        ctx.fill();
+
+        // Brand Wordmark
+        ctx.fillStyle = '#3B2314';
+        ctx.font = `700 ${Math.round(pouchW * 0.115)}px Lora, Georgia, serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Patti & Pour®', logoX, waveBot - 14);
+
+        // Blend Name & Category Typography
+        const textCenterX = frontX + pouchW * 0.5;
+        ctx.fillStyle = '#F7F3EA';
+        ctx.font = `700 ${Math.round(pouchW * 0.095)}px Inter, sans-serif`;
+        ctx.fillText(blend.name, textCenterX, waveBot + pouchH * 0.095);
+        ctx.fillText(blend.subname, textCenterX, waveBot + pouchH * 0.165);
+
+        ctx.fillStyle = 'rgba(247, 243, 234, 0.88)';
+        ctx.font = `600 ${Math.round(pouchW * 0.044)}px Inter, sans-serif`;
+        ctx.fillText(blend.category, textCenterX, waveBot + pouchH * 0.22);
+
+        // Tasting tagline
+        ctx.fillStyle = 'rgba(247, 243, 234, 0.92)';
+        ctx.font = `400 ${Math.round(pouchW * 0.043)}px Inter, sans-serif`;
+        ctx.fillText(blend.tagline, textCenterX, waveBot + pouchH * 0.30);
+
+        // Illustrated Scenic Landscape Footer on Pouch
+        const landY = frontY + pouchH * 0.72;
+        const landH = pouchH * 0.28;
+        drawPouchLandscape(frontX, landY, pouchW, landH, blend);
+
+        // Net Wt. 250g badge
+        ctx.fillStyle = '#F7F3EA';
+        ctx.font = `600 ${Math.round(pouchW * 0.042)}px Inter, sans-serif`;
+        ctx.textAlign = 'right';
+        ctx.fillText('NET WT. 250 g', frontX + pouchW - 12, frontY + pouchH - 10);
+
+        ctx.restore();
+      }
+
+      // -----------------------------------------------------------------------
+      // 4. BLEND SWITCHER LOGIC (UPDATES CANVAS + CALLOUT CARDS LIVE)
+      // -----------------------------------------------------------------------
+      function selectBlend(key) {
+        if (!BLENDS[key]) return;
+        activeBlendKey = key;
+        const b = BLENDS[key];
+
+        // Update pill UI
+        document.querySelectorAll('.blend-pill').forEach((pill) => {
+          const isMatch = pill.getAttribute('data-blend') === key;
+          if (isMatch) {
+            pill.classList.add('bg-cream-100', 'text-espresso-900', 'font-semibold', 'shadow');
+            pill.classList.remove('text-cream-200/80', 'font-medium');
+          } else {
+            pill.classList.remove('bg-cream-100', 'text-espresso-900', 'font-semibold', 'shadow');
+            pill.classList.add('text-cream-200/80', 'font-medium');
+          }
+        });
+
+        // Update scrollytelling callouts dynamically
+        document.getElementById('callout-1-title').textContent = b.aromaTitle;
+        document.getElementById('callout-1-desc').textContent = b.aromaDesc;
+        document.getElementById('callout-1-stat').textContent = b.aromaStat;
+
+        document.getElementById('callout-2-title').textContent = b.tasteTitle;
+        document.getElementById('callout-2-desc').textContent = b.tasteDesc;
+        document.getElementById('callout-2-stat').textContent = b.tasteStat;
+
+        renderFrame();
+      }
+
+      document.querySelectorAll('.blend-pill').forEach((pill) => {
+        pill.addEventListener('click', () => {
+          selectBlend(pill.getAttribute('data-blend'));
+        });
+      });
+
+      // -----------------------------------------------------------------------
+      // 5. GSAP SCROLLTRIGGER CHOREOGRAPHY (PRESERVES SCROLLABLE EXPERIENCE)
+      // -----------------------------------------------------------------------
+      const heroOverlay = document.getElementById('hero-overlay');
+      const calloutAroma = document.getElementById('callout-aroma');
+      const calloutTaste = document.getElementById('callout-taste');
+      const calloutOrigin = document.getElementById('callout-origin');
+      const progressBar = document.getElementById('scroll-progress-bar');
+      const chapterIndicator = document.getElementById('chapter-indicator');
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#scrollytelling-track',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.7,
+          onUpdate: (self) => {
+            const p = self.progress;
+            scrollState.progress = p;
+            progressBar.style.width = `${(p * 100).toFixed(1)}%`;
+
+            if (p < 0.24) {
+              chapterIndicator.textContent = '01 / EVERY CUP HAS A STORY';
+            } else if (p < 0.50) {
+              chapterIndicator.textContent = '02 / HIGH-ALTITUDE AROMA';
+            } else if (p < 0.76) {
+              chapterIndicator.textContent = '03 / TASTING PROFILE';
+            } else {
+              chapterIndicator.textContent = '04 / BREW PERFECT CHAI';
+            }
+
+            renderFrame();
+          }
+        }
+      });
+
+      // Stage 1: Hero fades out
+      tl.to(heroOverlay, { opacity: 0, y: -30, duration: 0.16, ease: 'power2.inOut' }, 0.05);
+
+      // Stage 2: Aroma Card
+      tl.fromTo(calloutAroma, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.23)
+        .to(calloutAroma, { opacity: 0, y: -22, duration: 0.07, ease: 'power2.in' }, 0.43);
+
+      // Stage 3: Taste Card
+      tl.fromTo(calloutTaste, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.50)
+        .to(calloutTaste, { opacity: 0, y: -22, duration: 0.07, ease: 'power2.in' }, 0.70);
+
+      // Stage 4: Brewing Ritual Card
+      tl.fromTo(calloutOrigin, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.09, ease: 'power2.out' }, 0.76);
+
+      // -----------------------------------------------------------------------
+      // 6. AUTO-SCRUB DEMO CONTROLLER
+      // -----------------------------------------------------------------------
+      const autoPlayBtn = document.getElementById('auto-play-btn');
+      const playLabel = document.getElementById('play-label');
+      let autoTween = null;
+
+      function stopAutoDemo() {
+        if (autoTween) {
+          autoTween.kill();
+          autoTween = null;
+        }
+        playLabel.textContent = 'Auto-Scrub';
+      }
+
+      autoPlayBtn.addEventListener('click', () => {
+        if (autoTween) {
+          stopAutoDemo();
+          return;
+        }
+
+        const track = document.getElementById('scrollytelling-track');
+        const maxScroll = track.offsetTop + track.offsetHeight - window.innerHeight;
+        if (window.scrollY >= maxScroll - 20) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        playLabel.textContent = 'Pause Demo';
+        const scrollProxy = { y: window.scrollY };
+
+        autoTween = gsap.to(scrollProxy, {
+          y: maxScroll,
+          duration: 11,
+          ease: 'none',
+          onUpdate: () => window.scrollTo(0, scrollProxy.y),
+          onComplete: stopAutoDemo
+        });
+      });
+
+      window.addEventListener('wheel', stopAutoDemo, { passive: true });
+      window.addEventListener('touchstart', stopAutoDemo, { passive: true });
+
+      // -----------------------------------------------------------------------
+      // 7. ORDER MODAL INTERACTIONS
+      // -----------------------------------------------------------------------
+      const reserveModal = document.getElementById('reserve-modal');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      const reserveForm = document.getElementById('reserve-form');
+      const confirmationBox = document.getElementById('reserve-confirmation');
+      const blendSelect = document.getElementById('blend-select');
+
+      function openOrderModal(preselectKey) {
+        if (preselectKey && BLENDS[preselectKey]) {
+          const idx = Object.keys(BLENDS).indexOf(preselectKey);
+          if (idx >= 0) blendSelect.selectedIndex = idx;
+        }
+        confirmationBox.classList.add('hidden');
+        reserveForm.classList.remove('hidden');
+        reserveModal.classList.remove('hidden');
+        reserveModal.classList.add('flex');
+      }
+
+      function closeOrderModal() {
+        reserveModal.classList.add('hidden');
+        reserveModal.classList.remove('flex');
+      }
+
+      document.getElementById('reserve-nav-btn').addEventListener('click', () => openOrderModal(activeBlendKey));
+      document.getElementById('bento-explore-btn').addEventListener('click', () => openOrderModal(activeBlendKey));
+      closeModalBtn.addEventListener('click', closeOrderModal);
+
+      reserveModal.addEventListener('click', (e) => {
+        if (e.target === reserveModal) closeOrderModal();
+      });
+
+      reserveForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('customer-email').value.trim();
+        const chosen = blendSelect.value;
+        document.getElementById('confirmation-detail').textContent =
+          `Reserved ${chosen} for ${email}.`;
+        reserveForm.classList.add('hidden');
+        confirmationBox.classList.remove('hidden');
+      });
+
+      // Initialize on Load
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('load', () => {
+        renderProductCards();
+        resizeCanvas();
+      });
+      renderProductCards();
+      resizeCanvas();
+    })();
+  </script>
+</body>
+</html>
